@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="400" viewBox="0 0 980 400" font-family="'Microsoft YaHei','PingFang SC','Segoe UI',Arial,sans-serif">
+<rect x="0" y="0" width="980" height="400" fill="#ffffff"/>
+<text x="490.0" y="40" font-size="19" fill="#1f2937" text-anchor="middle" font-weight="bold" opacity="1">图 3-1　可复现的 NLP 五步测度构建流水线</text>
+<text x="490.0" y="63" font-size="12.5" fill="#6b7280" text-anchor="middle" font-weight="normal" opacity="1">全程自主实现，无黑箱调用；每一步均可独立复现</text>
+<rect x="36.0" y="118" width="156" height="150" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.4"/>
+<circle cx="114.0" cy="152" r="19" fill="#0f766e"/>
+<text x="114.0" y="158" font-size="16" fill="#ffffff" text-anchor="middle" font-weight="bold" opacity="1">①</text>
+<text x="114.0" y="194" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold" opacity="1">原始数据采集</text>
+<text x="114.0" y="218" font-size="11.5" fill="#6b7280" text-anchor="middle" font-weight="normal" opacity="1">采集短视频基础数据</text>
+<text x="114.0" y="236" font-size="11.5" fill="#6b7280" text-anchor="middle" font-weight="normal" opacity="1">与全部公开评论</text>
+<path d="M 198.0 193 L 218.0 193" stroke="#0f766e" stroke-width="2"/>
+<path d="M 214.0 188 L 222.0 193 L 214.0 198 Z" fill="#0f766e"/>
+<rect x="224.0" y="118" width="156" height="150" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.4"/>
+<circle cx="302.0" cy="152" r="19" fill="#0f766e"/>
+<text x="302.0" y="158" font-size="16" fill="#ffffff" text-anchor="middle" font-weight="bold" opacity="1">②</text>
+<text x="302.0" y="194" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold" opacity="1">文本数据清洗</text>
+<text x="302.0" y="218" font-size="11.5" fill="#6b7280" text-anchor="middle" font-weight="normal" opacity="1">正则剔除表情、符号</text>
+<text x="302.0" y="236" font-size="11.5" fill="#6b7280" text-anchor="middle" font-weight="normal" opacity="1">数字、乱码与噪声</text>
+<path d="M 386.0 193 L 406.0 193" stroke="#0f766e" stroke-width="2"/>
+<path d="M 402.0 188 L 410.0 193 L 402.0 198 Z" fill="#0f766e"/>
+<rect x="412.0" y="118" width="156" height="150" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.4"/>
+<circle cx="490.0" cy="152" r="19" fill="#0f766e"/>
+<text x="490.0" y="158" font-size="16" fill="#ffffff" text-anchor="middle" font-weight="bold" opacity="1">③</text>
+<text x="490.0" y="194" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold" opacity="1">分词与停用词过滤</text>
+<text x="490.0" y="218" font-size="11.5" fill="#6b7280" text-anchor="middle" font-weight="normal" opacity="1">Jieba 精准分词 +</text>
+<text x="490.0" y="236" font-size="11.5" fill="#6b7280" text-anchor="middle" font-weight="normal" opacity="1">新媒体停用词表</text>
+<path d="M 574.0 193 L 594.0 193" stroke="#0f766e" stroke-width="2"/>
+<path d="M 590.0 188 L 598.0 193 L 590.0 198 Z" fill="#0f766e"/>
+<rect x="600.0" y="118" width="156" height="150" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.4"/>
+<circle cx="678.0" cy="152" r="19" fill="#0f766e"/>
+<text x="678.0" y="158" font-size="16" fill="#ffffff" text-anchor="middle" font-weight="bold" opacity="1">④</text>
+<text x="678.0" y="194" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold" opacity="1">情感词典匹配</text>
+<text x="678.0" y="218" font-size="11.5" fill="#6b7280" text-anchor="middle" font-weight="normal" opacity="1">统计单视频正向词频</text>
+<text x="678.0" y="236" font-size="11.5" fill="#6b7280" text-anchor="middle" font-weight="normal" opacity="1">Pos 与负向词频 Neg</text>
+<path d="M 762.0 193 L 782.0 193" stroke="#0f766e" stroke-width="2"/>
+<path d="M 778.0 188 L 786.0 193 L 778.0 198 Z" fill="#0f766e"/>
+<rect x="788.0" y="118" width="156" height="150" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.4"/>
+<circle cx="866.0" cy="152" r="19" fill="#0f766e"/>
+<text x="866.0" y="158" font-size="16" fill="#ffffff" text-anchor="middle" font-weight="bold" opacity="1">⑤</text>
+<text x="866.0" y="194" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold" opacity="1">构建情感测度</text>
+<text x="866.0" y="218" font-size="11.5" fill="#6b7280" text-anchor="middle" font-weight="normal" opacity="1">计算 Pos_Sent /</text>
+<text x="866.0" y="236" font-size="11.5" fill="#6b7280" text-anchor="middle" font-weight="normal" opacity="1">Neg_Sent / Total_Sent</text>
+<rect x="36.0" y="296" width="908" height="46" rx="10" fill="#ecfdf5" stroke="#99f6e4"/>
+<text x="490.0" y="325" font-size="13" fill="#0f766e" text-anchor="middle" font-weight="bold" opacity="1">输出：结构化的情感测度指标　→　信效度检验　→　相关性分析　→　多元回归与稳健性检验</text>
+</svg>

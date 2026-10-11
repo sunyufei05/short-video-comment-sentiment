@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use these materials, please cite them as below."
+title: "基于 NLP 文本情感分析的短视频用户评论情绪对视频热度的影响研究"
+abstract: >-
+  以抖音公开短视频数据为研究样本，通过完整的文本大数据处理流水线自主构建
+  用户评论情感指数（积极/消极/综合），并实证检验用户评论情绪对短视频热度
+  （点赞量、评论量、转发量）的影响机制。有效样本 N = 406，覆盖生活、美食、
+  娱乐三大类别。研究结论表明：积极情感指数与视频热度显著正相关，消极情感
+  显著抑制传播热度，中性情绪无显著影响。
+authors:
+  - family-names: "孙"
+    given-names: "雨霏"
+    alias: "Sun Yufei"
+type: dataset
+license: CC-BY-4.0
+keywords:
+  - 自然语言处理
+  - NLP 测度构建
+  - 短视频
+  - 用户评论
+  - 情感分析
+  - 视频热度
+  - 大数据分析
+  - 文本挖掘
+repository-code: "https://github.com/sunyufei05/short-video-comment-sentiment"
+url: "https://github.com/sunyufei05/short-video-comment-sentiment"
+year: 2024
+date-released: "2024-01-01"
+references:
+  - type: article
+    title: "Opinion Mining and Sentiment Analysis"
+    authors:
+      - family-names: "Pang"
+        given-names: "Bo"
+      - family-names: "Lee"
+        given-names: "Lillian"
+    journal: "Foundations and Trends in Information Retrieval"
+    volume: 2
+    issue: 1
+    start: 1
+    end: 135
+    year: 2008

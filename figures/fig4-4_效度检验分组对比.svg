@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="440" viewBox="0 0 720 440" font-family="'Microsoft YaHei','PingFang SC','Segoe UI',Arial,sans-serif">
+<rect x="0" y="0" width="720" height="440" fill="#ffffff"/>
+<text x="360.0" y="38" font-size="18" fill="#1f2937" text-anchor="middle" font-weight="bold">图 4-4　效度检验：高/低热度组积极情感指数对比</text>
+<text x="360.0" y="61" font-size="12.5" fill="#6b7280" text-anchor="middle" font-weight="normal">分组均值差异显著（p &lt; 0.001），表明自建指标可有效区分视频口碑</text>
+<line x1="100" y1="332.0" x2="656" y2="332.0" stroke="#e5e7eb"/>
+<text x="86" y="336.5" font-size="12" fill="#6b7280" text-anchor="end" font-weight="normal">0.0</text>
+<line x1="100" y1="284.0" x2="656" y2="284.0" stroke="#e5e7eb"/>
+<text x="86" y="288.5" font-size="12" fill="#6b7280" text-anchor="end" font-weight="normal">0.2</text>
+<line x1="100" y1="236.0" x2="656" y2="236.0" stroke="#e5e7eb"/>
+<text x="86" y="240.5" font-size="12" fill="#6b7280" text-anchor="end" font-weight="normal">0.4</text>
+<line x1="100" y1="188.0" x2="656" y2="188.0" stroke="#e5e7eb"/>
+<text x="86" y="192.49999999999997" font-size="12" fill="#6b7280" text-anchor="end" font-weight="normal">0.6</text>
+<line x1="100" y1="140.0" x2="656" y2="140.0" stroke="#e5e7eb"/>
+<text x="86" y="144.5" font-size="12" fill="#6b7280" text-anchor="end" font-weight="normal">0.8</text>
+<line x1="100" y1="92.0" x2="656" y2="92.0" stroke="#e5e7eb"/>
+<text x="86" y="96.5" font-size="12" fill="#6b7280" text-anchor="end" font-weight="normal">1.0</text>
+<line x1="100" y1="92" x2="100" y2="332" stroke="#9ca3af" stroke-width="1.4"/>
+<line x1="100" y1="332" x2="656" y2="332" stroke="#9ca3af" stroke-width="1.4"/>
+<rect x="224.0" y="136.9" width="134" height="195.1" fill="#b45309" rx="3"/>
+<text x="291.0" y="122.88000000000002" font-size="16" fill="#b45309" text-anchor="middle" font-weight="bold">0.813</text>
+<text x="291.0" y="362" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold">高热度视频组</text>
+<rect x="398.0" y="229.8" width="134" height="102.2" fill="#94a3b8" rx="3"/>
+<text x="465.0" y="215.76" font-size="16" fill="#94a3b8" text-anchor="middle" font-weight="bold">0.426</text>
+<text x="465.0" y="362" font-size="13.5" fill="#1f2937" text-anchor="middle" font-weight="bold">低热度视频组</text>
+<line x1="291.0" y1="118.9" x2="291.0" y2="106.9" stroke="#1f2937" stroke-width="1.2"/>
+<line x1="465.0" y1="118.9" x2="465.0" y2="106.9" stroke="#1f2937" stroke-width="1.2"/>
+<line x1="291.0" y1="106.9" x2="465.0" y2="106.9" stroke="#1f2937" stroke-width="1.2"/>
+<text x="378.0" y="97.88000000000002" font-size="12.5" fill="#1f2937" text-anchor="middle" font-weight="bold">Δ = 0.387，p &lt; 0.001</text>
+<text x="100" y="412" font-size="11.5" fill="#6b7280" text-anchor="start" font-weight="normal">注：分组依据视频综合热度指标的中位数划分；数据来源见论文 4.3.2 节。</text>
+</svg>

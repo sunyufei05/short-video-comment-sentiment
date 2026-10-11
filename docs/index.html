@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>基于 NLP 文本情感分析的短视频用户评论情绪对视频热度的影响研究</title>
+<meta name="description" content="以抖音公开短视频数据为样本，自主构建 NLP 情感测度指标体系，实证检验用户评论情绪对视频热度的影响机制。">
+<style>
+  :root{
+    --bg:#ffffff; --panel:#f8fafc; --panel2:#f1f5f9; --line:#e2e8f0;
+    --text:#1f2937; --muted:#64748b; --accent:#2b6cb0; --accent2:#0f766e;
+    --pos:#2b6cb0; --neg:#c0524f; --tot:#7c6bb0; --warm:#b45309;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"Microsoft YaHei","PingFang SC","Segoe UI",-apple-system,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.75; -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--accent); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .wrap{max-width:1060px; margin:0 auto; padding:0 24px;}
+
+  /* ---------- header ---------- */
+  header{
+    background:linear-gradient(160deg,#f8fbff 0%,#eef4fb 55%,#f7fbfa 100%);
+    border-bottom:1px solid var(--line); padding:56px 0 44px;
+  }
+  .kicker{
+    display:inline-block; font-size:12.5px; letter-spacing:.16em; color:var(--accent2);
+    border:1px solid #cbeae4; background:#ecfdf5; border-radius:999px;
+    padding:3px 12px; margin-bottom:18px; font-weight:600;
+  }
+  h1{font-size:31px; line-height:1.4; margin:0 0 14px; letter-spacing:.2px;}
+  .sub{color:var(--muted); font-size:15px; max-width:760px; margin:0 0 22px;}
+  .badges{display:flex; flex-wrap:wrap; gap:9px;}
+  .badge{
+    font-size:12.5px; background:#fff; border:1px solid var(--line); color:#475569;
+    padding:5px 12px; border-radius:6px; font-weight:600;
+  }
+  .badge b{color:var(--accent);}
+  .btn{
+    display:inline-block; background:var(--accent); color:#fff; font-weight:700;
+    font-size:14px; padding:11px 22px; border-radius:8px;
+  }
+  .btn:hover{background:#2563a8; text-decoration:none;}
+  .btn.ghost{background:#fff; color:var(--accent); border:1px solid #d6e6f7; margin-left:10px;}
+  .btn.ghost:hover{background:#f7fbff;}
+
+  /* ---------- sections ---------- */
+  section{padding:48px 0; border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  h2{
+    font-size:20px; margin:0 0 6px; display:flex; align-items:center; gap:10px;
+  }
+  h2::before{content:""; width:4px; height:19px; background:var(--accent); border-radius:2px;}
+  h2 .en{font-size:12.5px; color:#94a3b8; font-weight:500; letter-spacing:.06em;}
+  .lead{color:var(--muted); font-size:14.5px; margin:0 0 22px;}
+  h3{font-size:15.5px; margin:26px 0 10px; color:#334155;}
+
+  /* ---------- cards ---------- */
+  .grid{display:grid; gap:16px;}
+  .g3{grid-template-columns:repeat(3,1fr);}
+  .g2{grid-template-columns:repeat(2,1fr);}
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:20px 22px;
+  }
+  .card.hl{background:#f7fbff; border-color:#d6e6f7;}
+  .card .t{font-size:14px; font-weight:700; margin-bottom:8px;}
+  .card .d{font-size:13.5px; color:var(--muted);}
+  .card .v{font-size:26px; font-weight:800; letter-spacing:-.02em; margin:2px 0 4px;}
+  .v-pos{color:var(--pos);} .v-neg{color:var(--neg);} .v-acc{color:var(--accent2);} .v-warm{color:var(--warm);} .v-tot{color:var(--tot);}
+
+  .hyp{display:flex; align-items:flex-start; gap:14px; padding:15px 18px; border:1px solid var(--line); border-radius:11px; background:#fff;}
+  .hyp + .hyp{margin-top:10px;}
+  .tag{
+    flex:0 0 auto; font-size:12.5px; font-weight:800; padding:3px 10px; border-radius:6px;
+    background:#eef4fb; color:var(--accent); border:1px solid #d6e6f7; margin-top:2px;
+  }
+  .hyp .body{font-size:14px;}
+  .hyp .body strong{color:#0f172a;}
+  .ok{color:var(--accent2); font-weight:700;}
+
+  /* ---------- figures ---------- */
+  figure{margin:0; background:#fff; border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+  figure svg,figure img{display:block; width:100%; height:auto;}
+  figcaption{
+    font-size:12.5px; color:var(--muted); padding:11px 16px; border-top:1px solid var(--line);
+    background:var(--panel);
+  }
+
+  /* ---------- code ---------- */
+  pre{
+    background:#0f172a; color:#e2e8f0; border-radius:11px; padding:18px 20px;
+    overflow-x:auto; font-size:13px; line-height:1.7;
+    font-family:"Cascadia Code",Consolas,"SF Mono",Menlo,monospace;
+  }
+  code{font-family:"Cascadia Code",Consolas,"SF Mono",Menlo,monospace; font-size:.92em;}
+  p code,li code,td code{background:var(--panel2); padding:1.5px 6px; border-radius:5px; color:#334155;}
+
+  /* ---------- table ---------- */
+  .tw{overflow-x:auto; border:1px solid var(--line); border-radius:11px;}
+  table{border-collapse:collapse; width:100%; font-size:13.5px; background:#fff;}
+  th,td{padding:10px 14px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap;}
+  th{background:var(--panel); font-weight:700; color:#334155; font-size:13px;}
+  tr:last-child td{border-bottom:none;}
+  .num{font-variant-numeric:tabular-nums;}
+
+  /* ---------- tree ---------- */
+  .tree{
+    background:var(--panel); border:1px solid var(--line); border-radius:11px; padding:18px 22px;
+    font-family:"Cascadia Code",Consolas,"SF Mono",Menlo,monospace; font-size:12.5px;
+    line-height:1.85; color:#475569; overflow-x:auto; white-space:pre;
+  }
+  .tree .d{color:var(--accent); font-weight:700;}
+
+  /* ---------- footer ---------- */
+  footer{padding:44px 0 60px; color:var(--muted); font-size:13px;}
+  .notice{
+    background:#fffbeb; border:1px solid #fde68a; border-radius:11px;
+    padding:16px 20px; font-size:13.5px; color:#78350f; margin-top:18px;
+  }
+  .notice b{color:#92400e;}
+
+  @media (max-width:820px){
+    h1{font-size:24px;} .g3,.g2{grid-template-columns:1fr;} header{padding:40px 0 32px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="kicker">大数据管理与应用 · 文本大数据与自然语言处理</span>
+    <h1>基于 NLP 文本情感分析的<br>短视频用户评论情绪对视频热度的影响研究</h1>
+    <p class="sub">
+      以抖音公开短视频数据为研究样本，通过完整的文本大数据处理流水线自主构建用户评论情感指数，
+      实证检验用户评论情绪对短视频热度（点赞量、评论量、转发量）的影响机制。
+    </p>
+    <div class="badges">
+      <span class="badge">研究类型：<b>量化实证研究</b></span>
+      <span class="badge">方法：<b>NLP 测度构建 + 多元回归</b></span>
+      <span class="badge">有效样本：<b>N = 406</b></span>
+      <span class="badge">样本覆盖：<b>生活 · 美食 · 娱乐</b></span>
+      <span class="badge">许可：<b>CC BY 4.0</b></span>
+    </div>
+    <p style="margin:24px 0 0;">
+      <a class="btn" href="./paper.html">阅读论文全文</a>
+      <a class="btn ghost" href="#figures">查看图表</a>
+    </p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ============ 摘要 ============ -->
+  <section id="abstract">
+    <h2>摘要 <span class="en">ABSTRACT</span></h2>
+    <p class="lead">研究背景、方法路径与核心发现</p>
+    <p>
+      随着移动互联网与新媒体技术的飞速发展，短视频已经成为国民最主要的娱乐与信息获取渠道。用户评论作为短视频最重要的非结构化文本数据，
+      蕴含用户真实的观看体验、情感态度与行为偏好，是反映视频口碑与传播潜力的核心数据载体。
+    </p>
+    <p>
+      现有相关研究多直接采用平台现成的情感标签或简单词频统计，缺少自主构建 NLP 情感测度指标的完整研究流程，
+      存在测算精度低、研究可复现性差、数据分析流程不规范等问题。本研究基于大数据管理与应用专业的 NLP 文本测度构建方法，
+      以抖音短视频公开数据为研究样本，通过完整的文本大数据处理流水线自主构建用户评论情感指数，量化用户积极、消极、中性情感倾向，
+      并在此基础上实证检验用户评论情绪对短视频热度的影响机制。
+    </p>
+    <p>
+      研究选取生活、美食、娱乐三大热门类别，完成数据爬取、文本清洗、分词去停用词、情感词匹配、情感指数计算全流程 NLP 处理，
+      通过信效度检验验证自建指标的有效性，结合相关性分析与多元线性回归开展实证研究。
+    </p>
+
+    <h3>关键词</h3>
+    <p>自然语言处理 · NLP 测度构建 · 短视频 · 用户评论 · 情感分析 · 视频热度 · 大数据分析</p>
+
+    <h3>研究路线</h3>
+    <figure>
+      <img src="assets/fig3-1_nlp-pipeline.svg" alt="NLP 五步处理流水线">
+      <figcaption>图 3-1　可复现的 NLP 五步测度构建流水线（全程自主实现，无黑箱调用）</figcaption>
+    </figure>
+
+    <p style="margin-top:18px;">
+      以上为摘要内容。<a href="./paper.html"><b>→ 阅读论文全文</b></a>
+      （第 1~6 章正文、6 个测度公式、3 张数据表格、参考文献与致谢）
+    </p>
+  </section>
+
+  <!-- ============ 核心结论 ============ -->
+  <section id="findings">
+    <h2>核心研究结论 <span class="en">KEY FINDINGS</span></h2>
+    <p class="lead">三条研究假设全部通过检验</p>
+
+    <div class="hyp">
+      <span class="tag">H1</span>
+      <div class="body"><strong>积极情感指数与视频热度呈显著正相关</strong> —— 用户评论正向情绪越高，视频点赞、互动、传播效果越好，视频热度显著提升。系数 β = 3.216（t = 6.842，p &lt; 0.01）。<span class="ok">✅ 成立</span></div>
+    </div>
+    <div class="hyp">
+      <span class="tag">H2</span>
+      <div class="body"><strong>消极情感指数与视频热度呈显著负相关</strong> —— 用户负面评论越多、吐槽情绪越重，会大幅降低视频传播热度，阻碍流量增长。系数 β = −2.874（t = −5.921，p &lt; 0.01）。<span class="ok">✅ 成立</span></div>
+    </div>
+    <div class="hyp">
+      <span class="tag">H3</span>
+      <div class="body"><strong>中性评论情绪对视频热度无显著影响</strong> —— 无明显情感倾向的中性评论仅为客观描述，不影响用户观看与互动决策。<span class="ok">✅ 成立</span></div>
+    </div>
+
+    <h3>关键指标一览</h3>
+    <div class="grid g3">
+      <div class="card"><div class="t">积极情感指数均值</div><div class="v v-pos num">0.682</div><div class="d">远高于消极情感指数，正面评价占主导</div></div>
+      <div class="card"><div class="t">信度：词典分半 Pearson r</div><div class="v v-acc num">0.852</div><div class="d">p &lt; 0.001，远大于 0.7 的标准</div></div>
+      <div class="card"><div class="t">效度：高/低热度组差异</div><div class="v v-warm num">0.813 vs 0.426</div><div class="d">p &lt; 0.001，指标可有效区分口碑</div></div>
+    </div>
+
+    <h3>延伸结论</h3>
+    <ul>
+      <li><b>口碑情绪是核心隐性因素</b>：相较于视频时长等外在形式因素，用户观看后的情感体验与口碑评价对传播效果的影响更为关键（<code>Time</code> 系数不显著）。</li>
+      <li><b>正向循环机制</b>：优质内容收获大量积极评论，形成「正向口碑 → 高热度 → 持续传播」的良性循环；劣质内容的负面评价则直接限制流量传播。</li>
+      <li><b>方法论价值</b>：研究完整实现了从非结构化文本到结构化量化指标的大数据分析流程，可复用于短视频舆情分析、口碑测评与流量预测场景。</li>
+    </ul>
+  </section>
+
+  <!-- ============ 数据与变量 ============ -->
+  <section id="design">
+    <h2>研究设计 <span class="en">RESEARCH DESIGN</span></h2>
+    <p class="lead">数据来源、样本筛选与变量定义</p>
+
+    <div class="grid g2">
+      <div class="card">
+        <div class="t">样本与数据来源</div>
+        <div class="d">
+          数据来源：抖音公开短视频平台（合规采集公开非涉密数据）<br>
+          抽样范围：生活、美食、娱乐三大热门类别<br>
+          随机采集 <b>420</b> 条 → 预处理后有效样本 <b>406</b> 条<br>
+          剔除规则：无效短评、零互动视频、违规下架视频、纯广告视频
+        </div>
+      </div>
+      <div class="card">
+        <div class="t">核心测度公式（自建，ε = 0.0001）</div>
+        <div class="d" style="line-height:2.2;">
+          Total_Sent = (Pos − Neg) / (Pos + Neg + ε)<br>
+          Pos_Sent &nbsp;&nbsp;= Pos / (Pos + Neg + ε)<br>
+          Neg_Sent &nbsp;&nbsp;= Neg / (Pos + Neg + ε)
+        </div>
+      </div>
+    </div>
+
+    <h3>变量定义</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>变量类型</th><th>变量名称</th><th>符号</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>被解释变量</td><td>短视频热度</td><td><code>Popularity</code></td><td>点赞量、评论量、转发量标准化后的综合指标</td></tr>
+          <tr><td rowspan="3">核心解释变量</td><td>积极情感指数</td><td><code>Pos_Sent</code></td><td>用户评论整体正向情绪程度</td></tr>
+          <tr><td>消极情感指数</td><td><code>Neg_Sent</code></td><td>用户评论整体负向情绪程度</td></tr>
+          <tr><td>综合情感指数</td><td><code>Total_Sent</code></td><td>用户评论整体情感倾向</td></tr>
+          <tr><td rowspan="2">控制变量</td><td>视频时长</td><td><code>Time</code></td><td>短视频播放时长，影响观看完成率</td></tr>
+          <tr><td>视频类别</td><td><code>Type</code></td><td>生活、美食、娱乐三类虚拟变量</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ 图表 ============ -->
+  <section id="figures">
+    <h2>图表 <span class="en">FIGURES &amp; TABLES</span></h2>
+    <p class="lead">全部图形依据论文表格与正文数值重绘，矢量格式，可无损缩放</p>
+
+    <div class="grid g2">
+      <figure>
+        <img src="assets/fig4-1_sentiment-index-stats.svg" alt="情感指数描述性统计">
+        <figcaption>图 4-1　情感指数描述性统计（N = 406），数据来源：表 4-1</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/fig4-2_correlation-heatmap.svg" alt="变量相关性热力图">
+        <figcaption>图 4-2　变量 Pearson 相关性矩阵，数据来源：表 4-2</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/fig4-3_regression-coefficients.svg" alt="多元回归系数">
+        <figcaption>图 4-3　多元线性回归核心系数，数据来源：表 4-3</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/fig4-4_validity-check.svg" alt="效度检验分组对比">
+        <figcaption>图 4-4　高/低热度组积极情感指数对比，数据来源：4.3.2 节</figcaption>
+      </figure>
+    </div>
+
+    <h3>表 4-3　多元线性回归结果</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>变量</th><th>模型 1 (Pos_Sent)</th><th>模型 2 (Neg_Sent)</th><th>模型 3 (Total_Sent)</th></tr></thead>
+        <tbody>
+          <tr><td><code>Pos_Sent</code></td><td class="num">3.216*** (6.842)</td><td>—</td><td>—</td></tr>
+          <tr><td><code>Neg_Sent</code></td><td>—</td><td class="num">−2.874*** (−5.921)</td><td>—</td></tr>
+          <tr><td><code>Total_Sent</code></td><td>—</td><td>—</td><td class="num">2.953*** (7.126)</td></tr>
+          <tr><td><code>Time</code></td><td class="num">0.042 (1.521)</td><td class="num">0.038 (1.396)</td><td class="num">0.041 (1.487)</td></tr>
+          <tr><td>控制变量</td><td>已控制</td><td>已控制</td><td>已控制</td></tr>
+          <tr><td>调整 R²</td><td class="num">0.226</td><td class="num">0.198</td><td class="num">0.234</td></tr>
+          <tr><td>样本量</td><td class="num">406</td><td class="num">406</td><td class="num">406</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12.5px;color:var(--muted);margin-top:10px;">括号内为 t 值；*** p &lt; 0.01。</p>
+  </section>
+
+  <!-- ============ 仓库结构 ============ -->
+  <section id="repo">
+    <h2>材料组织 <span class="en">MATERIALS</span></h2>
+    <p class="lead">论文正文、图表、参考文献、补充材料与可执行代码的完整组织结构</p>
+
+    <div class="tree"><span class="d">.</span>
+├── <span class="d">paper/</span>            论文正文（Markdown 全文 + 原始 Word 稿件）
+├── <span class="d">figures/</span>          图表（矢量 SVG）＋ 图表索引
+├── <span class="d">tables/</span>           表 4-1 ~ 表 4-3（Markdown + CSV 双格式）
+├── <span class="d">references/</span>       参考文献（md / bib / json）
+├── <span class="d">supplementary/</span>    研究假设与变量定义 · 核心测度公式 · NLP 流水线 · 数据说明
+├── <span class="d">code/</span>             可执行参考实现（NLP 流水线 / 实证分析 / 示例数据）
+└── <span class="d">docs/</span>             本页（在线主页）与 paper.html（论文全文）</div>
+
+    <p style="font-size:13.5px;color:var(--muted);margin-top:14px;">
+      本在线站点提供<b>论文全文</b>与<b>全部图表</b>的在线浏览；上表其余目录为材料的磁盘组织方式，
+      其中表 4-1 ~ 表 4-3 的完整数值已在下文「图表」章节中呈现。
+    </p>
+
+    <h3>可执行代码</h3>
+    <pre>cd code
+pip install -r requirements.txt
+
+python make_sample_data.py                                          # 生成示例数据
+python sentiment_pipeline.py --comments data/sample_comments.csv \
+                             --videos   data/sample_videos.csv \
+                             --out      out                         # NLP 五步流水线
+python empirical_analysis.py --input out/sentiment_index.csv \
+                             --out   out                            # 描述统计 / 相关 / 回归</pre>
+
+    <div class="notice">
+      <b>⚠️ 数据可得性说明</b><br>
+      原始短视频评论语料采集自公开平台，受平台数据政策与个人信息保护要求约束，<b>未随本仓库公开</b>。
+      <code>code/data/sample_*.csv</code> 为固定随机种子构造的<b>结构演示数据</b>，其数值与论文的 406 条样本<b>没有任何关系</b>。
+      论文可复算的全部结果（表 4-1 ~ 表 4-3）已完整导出至 <code>tables/</code>，可直接用于核对与二次分析。
+    </div>
+  </section>
+
+  <!-- ============ 引用 ============ -->
+  <section id="cite">
+    <h2>引用 <span class="en">CITATION</span></h2>
+    <p class="lead">如在研究中参考本材料，请按以下格式引用</p>
+    <pre>@misc{shortvideo_comment_sentiment,
+  title  = {基于 NLP 文本情感分析的短视频用户评论情绪对视频热度的影响研究},
+  author = {孙雨霏},
+  year   = {2024},
+  note   = {大数据管理与应用专业}
+}</pre>
+    <p>材料目录中同时提供 <code>CITATION.cff</code>（Citation File Format），支持自动生成 APA / BibTeX 引用。</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p style="margin:0 0 8px;">
+      论文文本、图表与文档以 <b>CC BY 4.0</b> 许可发布 · 代码部分同许可提供 · 可自由用于研究目的，请保留署名
+    </p>
+    <p style="margin:0; color:#94a3b8;">
+      本页依据论文材料自动整理生成 · 图表依据论文表格与正文数值重绘，未对原始数据做任何改动
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
